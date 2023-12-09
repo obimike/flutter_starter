@@ -5,6 +5,7 @@ enum AppRoute {
   splash('/'),
   onBoardingPage('/intro'),
   home('/home'),
+  numberVerification('number_verification'),
   settings('/settings'),
   auth('/auth'),
   ;
@@ -18,4 +19,6 @@ extension AppRouteNavigation on AppRoute {
   void go(BuildContext context) => context.go(path);
 
   void push(BuildContext context) => context.push(path);
+
+  void pushReplacement(BuildContext context) => context.pushReplacement(path);
 }
