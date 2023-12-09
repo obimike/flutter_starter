@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starter/core/app/pages/onboarding/onboarding.dart';
 import 'package:flutter_starter/core/app/pages/splash/splash_cubit/cubit.dart';
 import 'package:flutter_starter/core/app/pages/splash/splash_cubit/state.dart';
+import 'package:flutter_starter/core/util/constants/image_string.dart';
 
 class SplashPage extends StatelessWidget {
   const SplashPage({super.key});
@@ -18,7 +19,7 @@ class SplashPage extends StatelessWidget {
             }
             return const Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [Image(image: AssetImage("assets/images/logo.png"))],
+              children: [Image(image: AssetImage(MyImages.brand))],
             );
           },
         ),

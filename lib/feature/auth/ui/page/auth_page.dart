@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_starter/core/navigation/route.dart';
 import 'package:flutter_starter/core/util/constants/colors.dart';
+import 'package:flutter_starter/core/util/constants/image_string.dart';
+import 'package:flutter_starter/core/util/constants/sizes.dart';
 import 'package:flutter_starter/feature/auth/bloc/auth/auth_bloc.dart';
 import 'package:flutter_starter/feature/auth/bloc/auth/auth_event.dart';
 import 'package:flutter_starter/feature/auth/bloc/auth/auth_state.dart';
@@ -18,7 +20,7 @@ class AuthPage extends StatelessWidget {
     return SafeArea(
       child: BlocBuilder<AuthBloc, AuthState>(
         builder: (context, state) {
-          print(state.status);
+          // debugPrint(state.status as String?);
           if (state.status == AuthStatus.existingUserSuccess) {}
           if (state.status == AuthStatus.newUserSuccess) {
             SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -28,16 +30,16 @@ class AuthPage extends StatelessWidget {
           }
           return Scaffold(
               body: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
+            padding: EdgeInsets.symmetric(vertical: MySizes.layoutHorizontal, horizontal: MySizes.layoutHorizontal),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Row(
+                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Image(
-                      image: AssetImage("assets/images/logo.png"),
-                      width: 160,
+                      image: const AssetImage(MyImages.brand),
+                      height: MySizes.ms,
                     ),
                   ],
                 ),

@@ -1,9 +1,9 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_starter/core/navigation/route.dart';
 import 'package:flutter_starter/core/util/constants/colors.dart';
 import 'package:flutter_starter/core/util/constants/image_string.dart';
 import 'package:flutter_starter/core/util/constants/sizes.dart';
+import 'package:flutter_starter/core/util/constants/strings.dart';
 import 'package:go_router/go_router.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -29,7 +29,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   void _onNextClick(BuildContext context) {
     if (currentIndex == 2) {
       context.go(AppRoute.auth.path);
-    }else{
+    } else {
       _pageController.jumpToPage(currentIndex + 1);
     }
   }
@@ -55,23 +55,20 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
               children: const [
                 OnBoarding(
                     image: MyImages.onboardingImages_1,
-                    title: 'Order a ride',
-                    subtitle:
-                        'Order a ride anytime, anywhere and get picked up by nearby drives.'),
+                    title: MyStrings.onboardingTitle_1,
+                    subtitle: MyStrings.onboardingSubTitle_1),
                 OnBoarding(
                     image: MyImages.onboardingImages_2,
-                    title: 'Offer a ride',
-                    subtitle:
-                        'Going somewhere! Share your ride and make extra income while at it.'),
+                    title: MyStrings.onboardingTitle_2,
+                    subtitle: MyStrings.onboardingSubTitle_2),
                 OnBoarding(
                     image: MyImages.onboardingImages_3,
-                    title: 'Safety and friendly',
-                    subtitle:
-                        'Drivers IDs are verified for safety and sharing ride together can be fun.')
+                    title: MyStrings.onboardingTitle_3,
+                    subtitle: MyStrings.onboardingSubTitle_3)
               ],
             ),
             Positioned(
-                top: MySizes.layoutVertical,
+                top: MySizes.ml,
                 right: MySizes.layoutHorizontal,
                 child: TextButton(
                   onPressed: _onSkip,
@@ -97,7 +94,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                 bottom: MySizes.layoutVertical,
                 right: MySizes.layoutHorizontal,
                 child: ElevatedButton(
-                  onPressed: ()=> _onNextClick(context),
+                  onPressed: () => _onNextClick(context),
                   style: currentIndex == 2
                       ? ElevatedButton.styleFrom(elevation: 2)
                       : ElevatedButton.styleFrom(shape: const CircleBorder()),
@@ -129,6 +126,7 @@ class OnBoarding extends StatelessWidget {
           horizontal: MySizes.layoutHorizontal),
       child: Column(
         children: [
+          Image(image: const AssetImage(MyImages.brand), height: MySizes.ms),
           SizedBox(
             height: MySizes.ml,
           ),

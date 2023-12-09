@@ -1,11 +1,11 @@
-
 import 'package:sizer/sizer.dart';
 
 class MySizes {
-
-  // Height
+  // Layout padding
   static final double layoutHorizontal = 4.w;
   static final double layoutVertical = 2.h;
+
+  // Height
   static final double xs = 1.h;
   static final double xm = 2.h;
   static final double xl = 4.h;
@@ -16,7 +16,6 @@ class MySizes {
   static final double lm = 14.h;
   static final double ll = 16.h;
 
-
 //   Width
   static final double wxs = 1.w;
   static final double wxm = 2.w;
@@ -24,8 +23,6 @@ class MySizes {
   static final double wms = 4.w;
   static final double wmm = 5.w;
   static final double wml = 6.w;
-
-
 
   static final double w50 = 50.w;
 }
