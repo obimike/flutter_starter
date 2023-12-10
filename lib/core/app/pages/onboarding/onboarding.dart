@@ -80,7 +80,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                 right: MySizes.layoutHorizontal,
                 child: TextButton(
                   onPressed: _onSkip,
-                  child: Text(
+                  child: currentIndex == 2? const Text("") : Text(
                     "Skip",
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
