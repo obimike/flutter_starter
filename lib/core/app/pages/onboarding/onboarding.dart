@@ -48,10 +48,18 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
         // backgroundColor: Colors.red,
         body: Stack(
           children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image(
+                    image: const AssetImage(MyImages.brand),
+                    height: MySizes.ms),
+              ],
+            ),
             PageView(
               controller: _pageController,
               onPageChanged: _onPageChange,
-              pageSnapping: false,
+              // pageSnapping: false,
               children: const [
                 OnBoarding(
                     image: MyImages.onboardingImages_1,
@@ -68,7 +76,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
               ],
             ),
             Positioned(
-                top: MySizes.ml,
+                top: MySizes.ms,
                 right: MySizes.layoutHorizontal,
                 child: TextButton(
                   onPressed: _onSkip,
@@ -126,11 +134,14 @@ class OnBoarding extends StatelessWidget {
           horizontal: MySizes.layoutHorizontal),
       child: Column(
         children: [
-          Image(image: const AssetImage(MyImages.brand), height: MySizes.ms),
           SizedBox(
-            height: MySizes.ml,
+            height: MySizes.lm,
           ),
-          Image(image: AssetImage(image)),
+          Image(
+            image: AssetImage(image),
+            width: MySizes.imageWidth,
+            height: MySizes.imageHeight,
+          ),
           SizedBox(
             height: MySizes.ms,
           ),

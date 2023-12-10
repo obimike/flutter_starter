@@ -5,6 +5,11 @@ class MySizes {
   static final double layoutHorizontal = 4.w;
   static final double layoutVertical = 2.h;
 
+  // OnBoarding Image
+  static final double imageWidth = 85.w;
+  static final double imageHeight = 42.h;
+
+
   // Height
   static final double xs = 1.h;
   static final double xm = 2.h;

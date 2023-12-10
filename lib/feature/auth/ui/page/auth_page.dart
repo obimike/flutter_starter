@@ -30,11 +30,13 @@ class AuthPage extends StatelessWidget {
           }
           return Scaffold(
               body: Padding(
-            padding: EdgeInsets.symmetric(vertical: MySizes.layoutHorizontal, horizontal: MySizes.layoutHorizontal),
+            padding: EdgeInsets.symmetric(
+                vertical: MySizes.layoutHorizontal,
+                horizontal: MySizes.layoutHorizontal),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                 Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Image(
@@ -94,7 +96,8 @@ class AuthPage extends StatelessWidget {
                               labelText: 'Phone Number',
                               border: OutlineInputBorder(
                                 borderSide: BorderSide(),
-                                borderRadius: BorderRadius.all(Radius.circular(4)),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(4)),
                               ),
                               focusColor: MyColors.primary,
                             ),
@@ -146,14 +149,17 @@ class AuthPage extends StatelessWidget {
                               ),
                             ),
                           ),
-                          SizedBox(height: 4.h,),
+                          SizedBox(
+                            height: 4.h,
+                          ),
                           Center(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
                                   'By clicking continue you have agreed to our',
-                                  style: Theme.of(context).textTheme.labelMedium,
+                                  style:
+                                      Theme.of(context).textTheme.labelMedium,
                                 ),
                                 GestureDetector(
                                   onDoubleTap: () {},
@@ -173,8 +179,6 @@ class AuthPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                
-
               ],
             ),
           ));

@@ -10,7 +10,7 @@ import 'package:flutter_starter/feature/auth/ui/page/number_verification.dart';
 import 'package:go_router/go_router.dart';
 
 final GoRouter router = GoRouter(
-  initialLocation: '/',
+  initialLocation: '/intro',
   debugLogDiagnostics: true,
   routes: <RouteBase>[
     GoRoute(
