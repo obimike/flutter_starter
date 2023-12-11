@@ -1,8 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 enum AuthStatus {
-  newUserSuccess,
-  existingUserSuccess,
+  success,
   failure,
   loading,
   initial,
@@ -11,6 +10,8 @@ enum AuthStatus {
 class AuthState extends Equatable {
   const AuthState({
     this.phone = '',
+    this.isValidNumber = false,
+    this.country = 'Nigeria',
     this.countryCode = '',
     this.countryISOCode = '',
     this.message = '',
@@ -18,6 +19,8 @@ class AuthState extends Equatable {
   });
 
   final String phone;
+  final bool isValidNumber;
+  final String country;
   final String countryCode;
   final String countryISOCode;
   final String message;
@@ -25,6 +28,8 @@ class AuthState extends Equatable {
 
   AuthState copyWith({
     String? phone,
+    bool? isValidNumber,
+    String? country,
     String? countryCode,
     String? countryISOCode,
     AuthStatus? status,
@@ -32,6 +37,8 @@ class AuthState extends Equatable {
   }) {
     return AuthState(
       phone: phone ?? this.phone,
+      isValidNumber: isValidNumber ?? this.isValidNumber,
+      country: country ?? this.country,
       countryCode: countryCode ?? this.countryCode,
       countryISOCode: countryISOCode ?? this.countryISOCode,
       status: status ?? this.status,
@@ -40,5 +47,5 @@ class AuthState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [phone,countryCode, countryISOCode, message, status];
+  List<Object?> get props => [phone,isValidNumber, country, countryCode, countryISOCode, message, status];
 }

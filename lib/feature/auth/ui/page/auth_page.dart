@@ -4,30 +4,42 @@ import 'package:flutter_starter/core/navigation/route.dart';
 import 'package:flutter_starter/core/util/constants/colors.dart';
 import 'package:flutter_starter/core/util/constants/image_string.dart';
 import 'package:flutter_starter/core/util/constants/sizes.dart';
-import 'package:flutter_starter/feature/auth/bloc/auth/auth_bloc.dart';
-import 'package:flutter_starter/feature/auth/bloc/auth/auth_event.dart';
-import 'package:flutter_starter/feature/auth/bloc/auth/auth_state.dart';
+import 'package:flutter_starter/feature/auth/cubit/auth/cubit.dart';
+import 'package:flutter_starter/feature/auth/cubit/auth/state.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
 
-class AuthPage extends StatelessWidget {
+class AuthPage extends StatefulWidget {
   const AuthPage({super.key});
+
+  @override
+  State<AuthPage> createState() => _AuthPageState();
+}
+
+class _AuthPageState extends State<AuthPage> {
+  final GlobalKey<FormState> _formKey = GlobalKey();
+
+  FocusNode focusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: BlocBuilder<AuthBloc, AuthState>(
-        builder: (context, state) {
-          // debugPrint(state.status as String?);
-          if (state.status == AuthStatus.existingUserSuccess) {}
-          if (state.status == AuthStatus.newUserSuccess) {
+      child: BlocConsumer<AuthCubit, AuthState>(
+        listenWhen: (prev, current) => prev.status != current.status,
+        listener: (context, state) {
+          // TODO: implement listener
+          if (state.status == AuthStatus.success) {
             SchedulerBinding.instance.addPostFrameCallback((_) {
               context.push(
                   context.namedLocation(AppRoute.numberVerification.path));
             });
           }
+        },
+        builder: (context, state) {
+          // debugPrint(state.status as String?);
+
           return Scaffold(
               body: Padding(
             padding: EdgeInsets.symmetric(
@@ -91,28 +103,34 @@ class AuthPage extends StatelessWidget {
                                 ),
                               ),
                             ),
-                          IntlPhoneField(
-                            decoration: const InputDecoration(
-                              labelText: 'Phone Number',
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(4)),
+                          Form(
+                            key: _formKey,
+                            child: IntlPhoneField(
+                              focusNode: focusNode,
+                              decoration: const InputDecoration(
+                                labelText: 'Phone Number',
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide(),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(4)),
+                                ),
+                                focusColor: MyColors.primary,
                               ),
-                              focusColor: MyColors.primary,
+                              cursorColor: MyColors.primary,
+                              initialCountryCode: 'NG',
+                              onChanged: (phone) {
+
+                                context.read<AuthCubit>().numberChanged(
+                                    phone.completeNumber,
+                                    phone.countryCode,
+                                    phone.countryISOCode);
+                              },
+                              onCountryChanged: (country) {
+                                context
+                                    .read<AuthCubit>()
+                                    .countryChanged(country.name);
+                              },
                             ),
-                            cursorColor: MyColors.primary,
-                            initialCountryCode: 'NG',
-                            onChanged: (phone) {
-                              context.read<AuthBloc>().add(
-                                  PhoneNumberChangedEvent(
-                                      phone: phone.number,
-                                      countryCode: phone.countryCode,
-                                      countryISOCode: phone.countryISOCode));
-                            },
-                            onCountryChanged: (country) {
-                              print('Country changed to: ${country.name}');
-                            },
                           ),
                           SizedBox(
                             height: 3.h,
@@ -120,12 +138,14 @@ class AuthPage extends StatelessWidget {
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton.icon(
-                              onPressed: () => (state.status ==
-                                      AuthStatus.loading)
-                                  ? null
-                                  : context
-                                      .read<AuthBloc>()
-                                      .add(const ContinueButtonPressedEvent()),
+                              onPressed: () =>
+                                  (state.status == AuthStatus.loading)
+                                      ? null
+                                      : _formKey.currentState!.validate()
+                                          ? context
+                                              .read<AuthCubit>()
+                                              .buttonClicked()
+                                          : null,
                               icon: (state.status == AuthStatus.loading)
                                   ? const Padding(
                                       padding: EdgeInsets.only(right: 8),

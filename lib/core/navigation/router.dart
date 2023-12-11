@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starter/core/app/pages/onboarding/onboarding.dart';
-import 'package:flutter_starter/core/app/pages/splash/splash_cubit/cubit.dart';
-import 'package:flutter_starter/core/app/pages/splash/splash_page.dart';
 import 'package:flutter_starter/core/navigation/route.dart';
-import 'package:flutter_starter/feature/auth/bloc/auth/auth_bloc.dart';
+import 'package:flutter_starter/feature/auth/cubit/auth/cubit.dart';
 import 'package:flutter_starter/feature/auth/ui/page/auth_page.dart';
 import 'package:flutter_starter/feature/auth/ui/page/number_verification.dart';
 import 'package:go_router/go_router.dart';
@@ -13,17 +11,6 @@ final GoRouter router = GoRouter(
   initialLocation: '/intro',
   debugLogDiagnostics: true,
   routes: <RouteBase>[
-    GoRoute(
-      path: AppRoute.splash.path,
-      builder: (BuildContext context, GoRouterState state) {
-        return BlocProvider(
-          create: (context) =>
-              SplashCubit()..nextScreen(),
-          child: const SplashPage(),
-        );
-      },
-    ),
-
     GoRoute(
       path: AppRoute.onBoardingPage.path,
       builder: (BuildContext context, GoRouterState state) =>
@@ -34,7 +21,7 @@ final GoRouter router = GoRouter(
       path: AppRoute.auth.path,
       builder: (BuildContext context, GoRouterState state) {
         return BlocProvider(
-          create: (context) => AuthBloc(),
+          create: (context) => AuthCubit(),
           child: const AuthPage(),
         );
       },
