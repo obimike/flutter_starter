@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_starter/core/navigation/route.dart';
 import 'package:flutter_starter/core/util/constants/colors.dart';
 import 'package:flutter_starter/core/util/constants/image_string.dart';
@@ -31,14 +32,23 @@ class _AuthPageState extends State<AuthPage> {
         listener: (context, state) {
           // TODO: implement listener
           if (state.status == AuthStatus.success) {
+            EasyLoading.dismiss();
             SchedulerBinding.instance.addPostFrameCallback((_) {
-              context.push(
-                  context.namedLocation(AppRoute.numberVerification.path));
+              context.push(context.namedLocation(
+                  AppRoute.numberVerification.path,
+                  pathParameters: {"phoneNumber": state.phone}));
             });
+          }
+          if (state.status == AuthStatus.loading) {
+            EasyLoading.show(
+              status: 'Authenticating, please wait...',
+            );
+          }
+          if (state.status == AuthStatus.failure) {
+            EasyLoading.dismiss();
           }
         },
         builder: (context, state) {
-          // debugPrint(state.status as String?);
 
           return Scaffold(
               body: Padding(
@@ -80,7 +90,7 @@ class _AuthPageState extends State<AuthPage> {
                             style: Theme.of(context).textTheme.bodyLarge,
                           ),
                           SizedBox(
-                            height: 1.h,
+                            height: MySizes.xs,
                           ),
                           Text(
                             'A verification code will be sent to you to verify this number.',
@@ -119,9 +129,8 @@ class _AuthPageState extends State<AuthPage> {
                               cursorColor: MyColors.primary,
                               initialCountryCode: 'NG',
                               onChanged: (phone) {
-
                                 context.read<AuthCubit>().numberChanged(
-                                    phone.completeNumber,
+                                    phone.completeNumber.trim(),
                                     phone.countryCode,
                                     phone.countryISOCode);
                               },
@@ -137,35 +146,13 @@ class _AuthPageState extends State<AuthPage> {
                           ),
                           SizedBox(
                             width: double.infinity,
-                            child: ElevatedButton.icon(
-                              onPressed: () =>
-                                  (state.status == AuthStatus.loading)
-                                      ? null
-                                      : _formKey.currentState!.validate()
-                                          ? context
-                                              .read<AuthCubit>()
-                                              .buttonClicked()
-                                          : null,
-                              icon: (state.status == AuthStatus.loading)
-                                  ? const Padding(
-                                      padding: EdgeInsets.only(right: 8),
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        color: Colors.white,
-                                      ),
-                                    )
-                                  : const SizedBox(),
-                              label: SizedBox(
-                                // width: dynamicWidth,
-                                child: (state.status == AuthStatus.loading)
-                                    ? const Text(
-                                        "Authenticating, please wait...",
-                                        textAlign: TextAlign.center,
-                                      )
-                                    : const Text(
-                                        "Continue",
-                                        textAlign: TextAlign.center,
-                                      ),
+                            child: ElevatedButton(
+                              onPressed: () => _formKey.currentState!.validate()
+                                  ? context.read<AuthCubit>().buttonClicked()
+                                  : null,
+                              child: const Text(
+                                "Continue",
+                                textAlign: TextAlign.center,
                               ),
                             ),
                           ),

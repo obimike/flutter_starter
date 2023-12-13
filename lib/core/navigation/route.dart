@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 enum AppRoute {
-  splash('/'),
-  onBoardingPage('/intro'),
-  home('/home'),
-  numberVerification('number_verification'),
-  settings('/settings'),
+  onBoardingPage('/'),
+  navigationMenu('/passenger'),
+  home('home'),
+  settings('settings'),
   auth('/auth'),
+  numberVerification('number_verification/:phoneNumber'),
   ;
 
   const AppRoute(this.path);

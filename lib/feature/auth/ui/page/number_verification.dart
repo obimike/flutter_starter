@@ -1,121 +1,174 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_starter/core/navigation/route.dart';
+import 'package:flutter_starter/core/util/constants/image_string.dart';
+import 'package:flutter_starter/core/util/constants/sizes.dart';
+import 'package:flutter_starter/feature/auth/cubit/verify_code/cubit.dart';
+import 'package:flutter_starter/feature/auth/cubit/verify_code/state.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pinput/pinput.dart';
 import 'package:flutter_starter/core/util/constants/colors.dart';
-import 'package:sizer/sizer.dart';
 
 class NumberVerification extends StatelessWidget {
-  const NumberVerification({super.key});
+  final String? phoneNumber;
+  const NumberVerification({super.key, required this.phoneNumber});
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        body: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
-          child: SingleChildScrollView(
-            child: IntrinsicHeight(
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
+      child: BlocConsumer<VerifyCodeCubit, VerifyCodeState>(
+        listenWhen: (prev, current) => prev.status != current.status,
+        listener: (context, state) {
+          // TODO: implement listener
+          if (state.status == VerifyCodeStatus.success) {
+            EasyLoading.dismiss();
+            SchedulerBinding.instance.addPostFrameCallback((_) {
+              context.go(AppRoute.navigationMenu.path);
+            });
+          }
+          if (state.status == VerifyCodeStatus.loading) {
+            EasyLoading.show(status: 'Verifying, please wait...',);
+          }
+          if (state.status == VerifyCodeStatus.failure) {
+            EasyLoading.dismiss();
+          }
+        },
+        builder: (context, state) {
+          return Scaffold(
+            body: Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
+              child: SingleChildScrollView(
+                child: IntrinsicHeight(
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        GestureDetector(
-                            onTap: () {
-                              context.push(AppRoute.auth.path);
-                            },
-                            child: const Icon(Icons.arrow_back_ios,
-                                color: MyColors.primaryTextColorLight)),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            GestureDetector(
+                                onTap: () {
+                                  context.push(AppRoute.auth.path);
+                                },
+                                child: const Icon(Icons.arrow_back_ios,
+                                    color: MyColors.primaryTextColorLight)),
+                            SizedBox(
+                              width: MySizes.wll + MySizes.wll,
+                            ),
+                            Image(
+                              image: const AssetImage(MyImages.brand),
+                              height: MySizes.ms,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 24,
+                        ),
+                        Text(
+                          'Enter verification code',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
                         SizedBox(
-                          width: 10.h,
+                          height: MySizes.xs,
                         ),
-                        const Image(
-                          image: AssetImage("assets/images/logo.png"),
-                          width: 160,
+                        RichText(
+                          text: TextSpan(children: [
+                            TextSpan(
+                              text: 'A four digit code has been sent to ',
+                              style: Theme.of(context).textTheme.labelMedium,
+                            ),
+                            TextSpan(
+                              text: phoneNumber,
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          ]),
                         ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 24,
-                    ),
-                    Text(
-                      'Enter verification code',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    Text(
-                      'A four(4) digit code has been sent to +2349034722110.',
-                      style: Theme.of(context).textTheme.labelMedium,
-                    ),
-                    const SizedBox(
-                      height: 48,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Pinput(
-                          androidSmsAutofillMethod:
-                              AndroidSmsAutofillMethod.smsUserConsentApi,
-                          listenForMultipleSmsOnAndroid: true,
-                          separatorBuilder: (index) =>
-                              const SizedBox(width: 16),
-                          // validator: (value) {
-                          //   return value == '2222' ? null : 'Pin is incorrect';
-                          // },
-                          // onClipboardFound: (value) {
-                          //   debugPrint('onClipboardFound: $value');
-                          //   pinController.setText(value);
-                          // },
-                          hapticFeedbackType: HapticFeedbackType.lightImpact,
-                          onCompleted: (pin) {
-                            debugPrint('onCompleted: $pin');
-                          },
-                          onChanged: (value) {
-                            debugPrint('onChanged: $value');
-                          },
-                          defaultPinTheme: PinTheme(
-                            width: 56,
-                            height: 56,
-                            textStyle: Theme.of(context).textTheme.titleLarge,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: MyColors.secondaryTextColorLight),
-                              borderRadius: BorderRadius.circular(4),
+                        SizedBox(
+                          height: MySizes.xl,
+                        ),
+                        if (state.status == VerifyCodeStatus.failure)
+                          Center(
+                            child: Padding(
+                              padding: EdgeInsets.only(bottom: MySizes.xm),
+                              child: Text(
+                                state.message,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(color: Colors.red),
+                                textAlign: TextAlign.center,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 48,
-                    ),
-                    Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Didn’t receive yet?',
-                            style: Theme.of(context).textTheme.labelMedium,
-                          ),
-                          const SizedBox(width: 4),
-                          GestureDetector(
-                            onDoubleTap: () {},
-                            child: Text(
-                              'Resend code',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .labelMedium
-                                  ?.copyWith(color: MyColors.secondary),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Pinput(
+                              obscureText: true,
+                              androidSmsAutofillMethod:
+                                  AndroidSmsAutofillMethod.smsUserConsentApi,
+                              listenForMultipleSmsOnAndroid: true,
+                              separatorBuilder: (index) =>
+                                  const SizedBox(width: 16),
+                              hapticFeedbackType:
+                                  HapticFeedbackType.lightImpact,
+                              onCompleted: (pin) {
+                                debugPrint('onCompleted: $pin');
+                                context.read<VerifyCodeCubit>().codeComplete();
+                              },
+                              onChanged: (value) {
+                                debugPrint('onChanged: $value');
+                                context
+                                    .read<VerifyCodeCubit>()
+                                    .codeChanged(value);
+                              },
+                              defaultPinTheme: PinTheme(
+                                width: 56,
+                                height: 56,
+                                textStyle:
+                                    Theme.of(context).textTheme.titleLarge,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: MyColors.secondaryTextColorLight),
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                              ),
                             ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 48,
+                        ),
+                        Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Didn’t receive yet?',
+                                style: Theme.of(context).textTheme.labelMedium,
+                              ),
+                              const SizedBox(width: 4),
+                              GestureDetector(
+                                onDoubleTap: () {},
+                                child: Text(
+                                  'Resend code',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .labelMedium
+                                      ?.copyWith(color: MyColors.secondary),
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
-                  ]),
+                        ),
+                      ]),
+                ),
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

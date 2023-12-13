@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter_starter/core/app/di.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_starter/core/navigation/router.dart';
 import 'package:flutter_starter/core/util/theme/theme.dart';
 import 'package:sizer/sizer.dart';
@@ -13,11 +13,13 @@ class MyApp extends StatelessWidget {
       return MaterialApp.router(
         title: 'Flutter Starter',
         debugShowCheckedModeBanner: false,
-        theme: AppTheme.darkTheme,
+        theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
-        // themeMode: ThemeMode.system,
+        themeMode: ThemeMode.system,
         routerConfig: router,
+        builder: EasyLoading.init(),
       );
     });
   }
 }
+
