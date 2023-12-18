@@ -13,7 +13,6 @@ void main() async{
   // TODO: initialize local storage
   // TODO: check authentication storage
   Bloc.observer = const AppBlocObserver();
-  await Future.delayed(const Duration(seconds: 3));
   FlutterNativeSplash.remove();
   runApp(const MyApp());
   _configLoading();

@@ -1,17 +1,34 @@
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppPreference {
 
-  static const THEME_SETTING = "THEMESETTING";
+  // static const themeMode = "themeMode";
+  //
+  // setThemePref(bool value) async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   prefs.setBool(themeMode, value);
+  // }
+  //
+  // Future<bool> getTheme() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   return prefs.getBool(themeMode) ?? false;
+  // }
 
-  setThemePref(bool value) async {
+
+  static const String themeModeKey = 'themeMode';
+
+  // Function to save the selected theme mode
+  static Future<void> setThemeMode(ThemeMode themeMode) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool(THEME_SETTING, value);
+    await prefs.setInt(themeModeKey, themeMode.index);
   }
 
-  Future<bool> getTheme() async {
+  // Function to load the saved theme mode
+  static Future<ThemeMode> getThemeMode() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(THEME_SETTING) ?? false;
+    int themeModeIndex = prefs.getInt(themeModeKey) ?? ThemeMode.system.index;
+    return ThemeMode.values[themeModeIndex];
   }
 
 }

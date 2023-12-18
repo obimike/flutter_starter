@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_starter/core/cubit/theme/cubit.dart';
 import 'package:flutter_starter/core/ui/widgets/icon_button.dart';
 import 'package:flutter_starter/core/ui/widgets/icon_frame.dart';
 import 'package:flutter_starter/core/util/constants/colors.dart';
 import 'package:flutter_starter/core/util/constants/sizes.dart';
 import 'package:flutter_starter/core/util/constants/strings.dart';
+import 'package:flutter_starter/core/util/helpers/app_preference.dart';
 import 'package:flutter_starter/core/util/helpers/functions.dart';
 import 'package:iconsax/iconsax.dart';
 
@@ -60,11 +63,13 @@ class _SettingsPageState extends State<SettingsPage> {
                   MyStrings.navAccount,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-                const MyIconButton(
+                MyIconButton(
                   size: 24,
                   icon: Iconsax.logout,
                   color: MyColors.error,
-                  backgroundColor: MyColors.primaryLightBG,
+                  backgroundColor: MyFunctions.isDark(context)
+                      ? MyColors.secondaryTextColorDark
+                      : MyColors.primaryLightBG,
                 ),
               ],
             ),
@@ -77,8 +82,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                      color:
-                          MyColors.primaryLightBG, // Set the background color
+                      color: MyColors.primaryLightBG, // Set the background color
                       borderRadius: BorderRadius.circular(
                           4), // Optional: Set border radius
                     ),
@@ -99,6 +103,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         Switch(
                             thumbIcon: thumbIcon,
                             activeColor: MyColors.primary,
+                            inactiveTrackColor: MyColors.secondaryTextColorDark,
                             value: mode,
                             onChanged: (bool value) {
                               setState(() {
@@ -194,7 +199,11 @@ class SettingsTiles extends StatelessWidget {
               SizedBox(
                 width: MySizes.xm,
               ),
-              Text(title, style: Theme.of(context).textTheme.bodyLarge),
+              Text(title,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge
+                      ?.copyWith(color: MyColors.primaryTextColorLight)),
             ],
           ),
           widget == null
@@ -233,19 +242,25 @@ class _ThemeSwitchState extends State<ThemeSwitch> {
       );
     },
   );
-  bool isDarkMode = false;
+  // bool isDarkMode = false;
   @override
   Widget build(BuildContext context) {
-    // bool isDarkMode = MyFunctions.isDark(context);
-    return Switch(
-        thumbIcon: themeModeIcon,
-        activeColor: MyColors.primary,
-        inactiveTrackColor: MyColors.lightBackground,
-        value: isDarkMode,
-        onChanged: (bool value) {
-          setState(() {
-            isDarkMode = value;
-          });
-        });
+    final ThemeCubit themeCubit = BlocProvider.of<ThemeCubit>(context);
+
+    return BlocBuilder<ThemeCubit, ThemeModeEnum>(
+      builder: (context, themeMode) {
+        return Switch(
+            thumbIcon: themeModeIcon,
+            activeColor: MyColors.primary,
+            inactiveTrackColor: MyColors.lightBackground,
+            value: themeMode == ThemeModeEnum.dark,
+            onChanged: (value) {
+              ThemeModeEnum newTheme =
+                  value ? ThemeModeEnum.dark : ThemeModeEnum.light;
+              themeCubit.toggleTheme(newTheme);
+
+            });
+      },
+    );
   }
 }
